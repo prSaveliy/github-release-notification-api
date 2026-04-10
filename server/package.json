@@ -15,17 +15,23 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "fastify": "^5.8.4"
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "dotenv": "^17.4.1",
+    "fastify": "^5.8.4",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
     "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "fastify-tsconfig": "^3.0.0",
     "globals": "^16.0.0",
     "nodemon": "^3.1.14",
     "prettier": "^3.8.2",
+    "prisma": "^7.7.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.1"
