@@ -1,0 +1,10 @@
+{
+  "extends": "../node_modules/fastify-tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": false,
+    "sourceMap": true
+  },
+  "include": ["src/**/*.ts", "prisma.config.ts"],
+  "exclude": ["eslint.config.mjs"]
+}
