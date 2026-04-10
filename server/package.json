@@ -15,6 +15,7 @@
     "test": "npx tsx --test test/*"
   },
   "dependencies": {
+    "@fastify/env": "^6.0.0",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "dotenv": "^17.4.1",
