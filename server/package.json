@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon",
-    "start": "node --env-file=.env --import tsx src/index.ts",
+    "start": "node --env-file=.env --import tsx src/server.ts",
     "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
