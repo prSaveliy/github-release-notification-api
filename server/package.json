@@ -16,11 +16,13 @@
   },
   "dependencies": {
     "@fastify/env": "^6.0.0",
+    "@fastify/sensible": "^6.0.4",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "dotenv": "^17.4.1",
     "fastify": "^5.8.4",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

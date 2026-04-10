@@ -1,6 +1,7 @@
 import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
 
 import fastifyEnv from '@fastify/env';
+import fastifySensible from '@fastify/sensible';
 
 import { envSchema } from './config/index.js';
 import { AppError } from './commons/interfaces/AppError.js';
@@ -29,6 +30,7 @@ const buildApp = async () => {
     schema: envSchema,
     dotenv: true,
   });
+  app.register(fastifySensible);
 
   return app;
 };
