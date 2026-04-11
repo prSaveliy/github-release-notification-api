@@ -45,6 +45,63 @@ class SubscriptionService {
       confirmationToken,
     );
   }
+
+  async confirm(fastify: FastifyInstance, token: string): Promise<void> {
+    const sub = await fastify.prisma.subscription.findUnique({
+      where: { confirmationToken: token },
+    });
+
+    if (!sub) {
+      throw fastify.httpErrors.notFound('Token not found');
+    }
+
+    if (sub.confirmed) {
+      // idempotent operation
+      return;
+    }
+
+    await fastify.prisma.subscription.update({
+      where: { id: sub.id },
+      data: { confirmed: true },
+    });
+  }
+
+  async unsubscribe(fastify: FastifyInstance, token: string): Promise<void> {
+    const sub = await fastify.prisma.subscription.findUnique({
+      where: { unsubscribeToken: token },
+    });
+
+    if (!sub) {
+      throw fastify.httpErrors.notFound('Token not found');
+    }
+
+    await fastify.prisma.subscription.delete({
+      where: { id: sub.id },
+    });
+  }
+
+  async listByEmail(
+    fastify: FastifyInstance,
+    email: string,
+  ): Promise<
+    Array<{
+      email: string;
+      repo: string;
+      confirmed: boolean;
+      last_seen_tag: string | null;
+    }>
+  > {
+    const rows = await fastify.prisma.subscription.findMany({
+      where: { email, confirmed: true },
+    });
+
+    return rows.map((r) => ({
+      email: r.email,
+      repo: r.repo,
+      confirmed: r.confirmed,
+      last_seen_tag: r.lastSeenTag,
+    }));
+  }
 }
 
 export default new SubscriptionService();
