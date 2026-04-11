@@ -2,17 +2,37 @@ export const envSchema = {
   type: 'object',
   required: [
     'PORT',
+    'API_URL',
     'DATABASE_URL',
+    'SMTP_HOST',
+    'SMTP_PORT',
+    'SMTP_USER',
+    'SMTP_PASSWORD',
   ],
   properties: {
     PORT: {
       type: 'number',
       default: 3000,
     },
+    API_URL: {
+      type: 'string',
+    },
     DATABASE_URL: {
       type: 'string',
     },
     GITHUB_TOKEN: {
+      type: 'string',
+    },
+    SMTP_HOST: {
+      type: 'string',
+    },
+    SMTP_PORT: {
+      type: 'number',
+    },
+    SMTP_USER: {
+      type: 'string',
+    },
+    SMTP_PASSWORD: {
       type: 'string',
     },
   },
