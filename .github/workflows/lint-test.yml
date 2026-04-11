@@ -19,6 +19,33 @@ jobs:
   test:
     needs: [lint]
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.2
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: github_release_notifications_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      NODE_ENV: test
+      PORT: 3000
+      API_URL: http://localhost:3000
+      DATABASE_URL: postgresql://user:password@localhost:5432/github_release_notifications_test?schema=public
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # SMTP vars are required by envSchema but never used:
+      # mailService.sendConfirmationEmail is mocked in integration tests,
+      # so nodemailer never opens a connection to this host.
+      SMTP_HOST: smtp.example.com
+      SMTP_PORT: 587
+      SMTP_USER: test@example.com
+      SMTP_PASSWORD: dummy
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,5 +55,25 @@ jobs:
           cache: "npm"
       - name: Install deps
         run: npm ci
+      - name: Write server/.env.test
+        working-directory: server
+        run: |
+          cat > .env.test <<EOF
+          NODE_ENV=$NODE_ENV
+          PORT=$PORT
+          API_URL=$API_URL
+          DATABASE_URL=$DATABASE_URL
+          GITHUB_TOKEN=$GITHUB_TOKEN
+          SMTP_HOST=$SMTP_HOST
+          SMTP_PORT=$SMTP_PORT
+          SMTP_USER=$SMTP_USER
+          SMTP_PASSWORD=$SMTP_PASSWORD
+          EOF
+      - name: Generate Prisma client
+        working-directory: server
+        run: npx prisma generate
+      - name: Run database migrations
+        working-directory: server
+        run: npx prisma migrate deploy
       - name: Test
         run: npm test
