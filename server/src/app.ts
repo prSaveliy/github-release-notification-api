@@ -2,6 +2,9 @@ import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
 
 import fastifyEnv from '@fastify/env';
 import fastifySensible from '@fastify/sensible';
+import prismaClientPlugin from './plugins/prismaClient.js';
+
+import subscriptionRoutes from './routes/subscription.route.js';
 
 import { envSchema } from './config/index.js';
 import { AppError } from './commons/interfaces/AppError.js';
@@ -31,6 +34,12 @@ const buildApp = async () => {
     dotenv: true,
   });
   app.register(fastifySensible);
+  app.register(prismaClientPlugin);
+
+  // routes
+  app.register(subscriptionRoutes, {
+    prefix: 'api',
+  });
 
   return app;
 };
