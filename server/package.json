@@ -12,8 +12,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "pretest:unit": "npx tsx --env-file=.env.test tests/helpers/reset-db.ts",
-    "test:unit": "npx tsx --env-file=.env.test --test 'tests/unit/**/*.test.ts'",
+    "test:unit": "npx tsx --test 'tests/unit/**/*.test.ts'",
     "pretest:integration": "npx tsx --env-file=.env.test tests/helpers/reset-db.ts",
     "test:integration": "npx tsx --env-file=.env.test --test 'tests/integration/**/*.test.ts'",
     "test": "npm run test:unit && npm run test:integration"
