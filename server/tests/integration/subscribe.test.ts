@@ -1,9 +1,10 @@
-import { describe, test, before, after } from 'node:test';
+import { describe, test, before, after, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { FastifyInstance } from 'fastify';
 
 import buildApp from '../../src/app.js';
+import mailService from '../../src/services/mail.service.js';
 
 const REAL_REPO = 'golang/go';
 const MISSING_REPO = 'this-owner-does-not-exist-xyz-9f2a1b/nope-repo-8c7d3e';
@@ -17,11 +18,13 @@ describe('POST /api/subscribe', () => {
     if (process.env.NODE_ENV !== 'test') {
       throw new Error('Refusing to wipe database: NODE_ENV is not "test"');
     }
+    mock.method(mailService, 'sendConfirmationEmail', async () => {});
     app = await buildApp();
     await app.ready();
   });
 
   after(async () => {
+    mock.restoreAll();
     await app.close();
   });
 
