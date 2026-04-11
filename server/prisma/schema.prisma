@@ -11,3 +11,15 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Subscription {
+  id                String    @id @default(uuid())
+  email             String
+  repo              String
+  confirmed         Boolean   @default(false)
+  lastSeenTag       String?
+  confirmationToken String    @unique
+  unsubscribeToken  String    @unique
+
+  @@unique([email, repo])
+}
