@@ -46,6 +46,8 @@ jobs:
       SMTP_PORT: 587
       SMTP_USER: test@example.com
       SMTP_PASSWORD: dummy
+      SCAN_ENABLED: "false"
+      SCAN_INTERVAL_MS: 600000
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -68,6 +70,8 @@ jobs:
           SMTP_PORT=$SMTP_PORT
           SMTP_USER=$SMTP_USER
           SMTP_PASSWORD=$SMTP_PASSWORD
+          SCAN_ENABLED=$SCAN_ENABLED
+          SCAN_INTERVAL_MS=$SCAN_INTERVAL_MS
           EOF
       - name: Generate Prisma client
         working-directory: server
