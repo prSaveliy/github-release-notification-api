@@ -5,6 +5,8 @@ import fastifySensible from '@fastify/sensible';
 import prismaClientPlugin from './plugins/prismaClient.js';
 import mailTransporterPlugin from './plugins/mailTransporter.js';
 
+import subscriptionRoutes from './routes/subscription.routes.js';
+
 import { envSchema } from './config/index.js';
 import { AppError } from './commons/interfaces/AppError.js';
 
@@ -35,6 +37,11 @@ const buildApp = async () => {
   app.register(fastifySensible);
   app.register(prismaClientPlugin);
   app.register(mailTransporterPlugin);
+
+  // routes
+  app.register(subscriptionRoutes, {
+    prefix: '/api',
+  });
 
   return app;
 };
