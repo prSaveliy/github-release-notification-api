@@ -1,6 +1,7 @@
 import 'fastify';
 import { HttpErrors } from '@fastify/sensible';
 import { Transporter } from 'nodemailer';
+import type { ToadScheduler } from 'toad-scheduler';
 
 import { PrismaClient } from '../../../generated/prisma/client.js';
 
@@ -15,9 +16,12 @@ declare module 'fastify' {
       SMTP_PORT: number;
       SMTP_USER: string;
       SMTP_PASSWORD: string;
+      SCAN_INTERVAL_MS: number;
+      SCAN_ENABLED: boolean;
     };
     httpErrors: HttpErrors;
     prisma: PrismaClient;
     mailTransporter: Transporter;
+    scheduler: ToadScheduler;
   }
 }

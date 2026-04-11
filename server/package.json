@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@fastify/env": "^6.0.0",
+    "@fastify/schedule": "^6.0.0",
     "@fastify/sensible": "^6.0.4",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
@@ -28,6 +29,7 @@
     "fastify-plugin": "^5.1.0",
     "nodemailer": "^8.0.5",
     "pg": "^8.20.0",
+    "toad-scheduler": "^3.1.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

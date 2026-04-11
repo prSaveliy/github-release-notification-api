@@ -35,5 +35,13 @@ export const envSchema = {
     SMTP_PASSWORD: {
       type: 'string',
     },
+    SCAN_INTERVAL_MS: {
+      type: 'number',
+      default: 600000,
+    },
+    SCAN_ENABLED: {
+      type: 'boolean',
+      default: true,
+    },
   },
 };
