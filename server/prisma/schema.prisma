@@ -20,6 +20,7 @@ model Subscription {
   lastSeenTag       String?
   confirmationToken String    @unique
   unsubscribeToken  String    @unique
+  createdAt         DateTime  @default(now())
 
   @@unique([email, repo])
 }

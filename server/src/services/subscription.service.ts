@@ -30,7 +30,7 @@ class SubscriptionService {
     if (existing) {
       await fastify.prisma.subscription.update({
         where: { email_repo: { email, repo } },
-        data: { confirmationToken, unsubscribeToken },
+        data: { confirmationToken, unsubscribeToken, createdAt: new Date() },
       });
     } else {
       await fastify.prisma.subscription.create({
