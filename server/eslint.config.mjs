@@ -13,6 +13,7 @@ export default [
       "**/*.md",
       "**/*.css",
       "**/*.html",
+      "**/*.test.ts",
     ],
   },
   js.configs.recommended,
