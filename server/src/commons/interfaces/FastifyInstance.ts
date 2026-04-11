@@ -8,6 +8,7 @@ declare module 'fastify' {
     config: {
       PORT: number;
       DATABASE_URL: string;
+      GITHUB_TOKEN?: string;
     };
     httpErrors: HttpErrors;
     prisma: PrismaClient;

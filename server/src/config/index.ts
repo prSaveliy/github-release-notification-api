@@ -12,5 +12,8 @@ export const envSchema = {
     DATABASE_URL: {
       type: 'string',
     },
+    GITHUB_TOKEN: {
+      type: 'string',
+    },
   },
 };
