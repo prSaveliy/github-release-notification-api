@@ -33,6 +33,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       NODE_ENV: test
       PORT: 3000
@@ -48,6 +57,8 @@ jobs:
       SMTP_PASSWORD: dummy
       SCAN_ENABLED: "false"
       SCAN_INTERVAL_MS: 600000
+      REDIS_URL: redis://localhost:6379
+      GITHUB_CACHE_TTL_SECONDS: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -72,6 +83,7 @@ jobs:
           SMTP_PASSWORD=$SMTP_PASSWORD
           SCAN_ENABLED=$SCAN_ENABLED
           SCAN_INTERVAL_MS=$SCAN_INTERVAL_MS
+          REDIS_URL=$REDIS_URL
           EOF
       - name: Generate Prisma client
         working-directory: server
