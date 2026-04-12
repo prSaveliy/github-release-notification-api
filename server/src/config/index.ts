@@ -8,6 +8,8 @@ export const envSchema = {
     'SMTP_PORT',
     'SMTP_USER',
     'SMTP_PASSWORD',
+    'REDIS_URL',
+    'GITHUB_CACHE_TTL_SECONDS',
   ],
   properties: {
     PORT: {

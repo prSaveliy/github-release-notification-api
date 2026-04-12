@@ -19,13 +19,13 @@ declare module 'fastify' {
       SMTP_PASSWORD: string;
       SCAN_INTERVAL_MS: number;
       SCAN_ENABLED: boolean;
-      REDIS_URL?: string;
+      REDIS_URL: string;
       GITHUB_CACHE_TTL_SECONDS: number;
     };
     httpErrors: HttpErrors;
     prisma: PrismaClient;
     mailTransporter: Transporter;
     scheduler: ToadScheduler;
-    redis?: Redis;
+    redis: Redis;
   }
 }
