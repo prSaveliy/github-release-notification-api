@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:18.2
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: "12345"
+      POSTGRES_DB: github_release_notifications
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d github_release_notifications"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      API_URL: http://localhost:3000
+      DATABASE_URL: postgresql://user:12345@db:5432/github_release_notifications?schema=public
+      REDIS_URL: redis://redis:6379
+      GITHUB_CACHE_TTL_SECONDS: 600
+      SMTP_HOST: ${SMTP_HOST:-smtp.example.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-user@example.com}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-changeme}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      SCAN_ENABLED: ${SCAN_ENABLED:-true}
+      SCAN_INTERVAL_MS: ${SCAN_INTERVAL_MS:-600000}
+
+volumes:
+  pgdata:

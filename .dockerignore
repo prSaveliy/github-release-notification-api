@@ -1,0 +1,14 @@
+node_modules
+server/node_modules
+server/dist
+server/generated
+server/postgresdata
+.git
+.github
+.claude
+client
+*.md
+.env
+server/.env
+server/.env.test
+server/postgres/.env
