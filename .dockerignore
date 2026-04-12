@@ -6,7 +6,6 @@ server/postgresdata
 .git
 .github
 .claude
-client
 *.md
 .env
 server/.env
