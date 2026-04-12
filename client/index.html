@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Release Notifications</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid #21262d;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    header svg { fill: #c9d1d9; }
+    header h1 { font-size: 1.25rem; font-weight: 600; }
+
+    main {
+      width: 100%;
+      max-width: 540px;
+      padding: 2.5rem 1rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      color: #8b949e;
+      margin-bottom: 2rem;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #21262d;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab {
+      padding: 0.75rem 1rem;
+      background: none;
+      border: none;
+      color: #8b949e;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .tab:hover { color: #c9d1d9; }
+    .tab.active { color: #c9d1d9; border-bottom-color: #f78166; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #c9d1d9;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: #58a6ff; }
+    input::placeholder { color: #484f58; }
+
+    .field + .field { margin-top: 1rem; }
+
+    button[type="submit"] {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.625rem 1rem;
+      background: #238636;
+      border: 1px solid rgba(240,246,252,0.1);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    button[type="submit"]:hover { background: #2ea043; }
+    button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .alert {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    .alert.success { background: #0d2818; border: 1px solid #238636; color: #3fb950; display: block; }
+    .alert.error { background: #2d1215; border: 1px solid #da3633; color: #f85149; display: block; }
+
+    .sub-list { list-style: none; margin-top: 1rem; }
+
+    .sub-item {
+      padding: 0.75rem 1rem;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sub-repo {
+      font-weight: 600;
+      color: #58a6ff;
+    }
+
+    .sub-meta {
+      font-size: 0.75rem;
+      color: #8b949e;
+      margin-top: 0.25rem;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .badge.confirmed { background: #0d2818; color: #3fb950; }
+    .badge.pending { background: #2d1f00; color: #d29922; }
+
+    .empty {
+      text-align: center;
+      color: #484f58;
+      padding: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <svg height="28" width="28" viewBox="0 0 16 16">
+      <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/>
+    </svg>
+    <h1>Release Notifications</h1>
+  </header>
+
+  <main>
+    <h2>Stay updated</h2>
+    <p class="subtitle">Get email notifications when your favorite repos publish new releases.</p>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="subscribe">Subscribe</button>
+      <button class="tab" data-tab="subscriptions">My Subscriptions</button>
+    </div>
+
+    <div id="subscribe" class="tab-content active">
+      <form id="subscribe-form">
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="repo">Repository</label>
+          <input type="text" id="repo" name="repo" placeholder="owner/repo" required pattern="^[^/]+/[^/]+$">
+        </div>
+        <button type="submit">Subscribe</button>
+      </form>
+      <div id="subscribe-alert" class="alert"></div>
+    </div>
+
+    <div id="subscriptions" class="tab-content">
+      <form id="lookup-form">
+        <div class="field">
+          <label for="lookup-email">Email address</label>
+          <input type="email" id="lookup-email" placeholder="you@example.com" required>
+        </div>
+        <button type="submit">Look up</button>
+      </form>
+      <div id="lookup-alert" class="alert"></div>
+      <ul class="sub-list" id="sub-list"></ul>
+    </div>
+  </main>
+
+  <script>
+    const API = '/api';
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    function showAlert(el, type, message) {
+      el.className = 'alert ' + type;
+      el.textContent = message;
+    }
+
+    function clearAlert(el) {
+      el.className = 'alert';
+      el.textContent = '';
+    }
+
+    document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const alertEl = document.getElementById('subscribe-alert');
+      clearAlert(alertEl);
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
+
+      const email = document.getElementById('email').value.trim();
+      const repo = document.getElementById('repo').value.trim();
+
+      try {
+        const res = await fetch(`${API}/subscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, repo }),
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (res.ok) {
+          showAlert(alertEl, 'success', 'Subscribed! Check your email to confirm.');
+          e.target.reset();
+        } else {
+          const msg = data?.message || `Error (${res.status})`;
+          showAlert(alertEl, 'error', msg);
+        }
+      } catch {
+        showAlert(alertEl, 'error', 'Network error. Please try again.');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('lookup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const alertEl = document.getElementById('lookup-alert');
+      const listEl = document.getElementById('sub-list');
+      clearAlert(alertEl);
+      listEl.innerHTML = '';
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
+
+      const email = document.getElementById('lookup-email').value.trim();
+
+      try {
+        const res = await fetch(`${API}/subscriptions?email=${encodeURIComponent(email)}`);
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok) {
+          showAlert(alertEl, 'error', data?.message || `Error (${res.status})`);
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          listEl.innerHTML = '<li class="empty">No subscriptions found.</li>';
+          return;
+        }
+
+        data.forEach(sub => {
+          const li = document.createElement('li');
+          li.className = 'sub-item';
+          li.innerHTML = `
+            <div>
+              <div class="sub-repo">${escapeHtml(sub.repo)}</div>
+              <div class="sub-meta">${sub.last_seen_tag ? 'Latest: ' + escapeHtml(sub.last_seen_tag) : 'No releases seen yet'}</div>
+            </div>
+            <span class="badge ${sub.confirmed ? 'confirmed' : 'pending'}">${sub.confirmed ? 'Confirmed' : 'Pending'}</span>
+          `;
+          listEl.appendChild(li);
+        });
+      } catch {
+        showAlert(alertEl, 'error', 'Network error. Please try again.');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>

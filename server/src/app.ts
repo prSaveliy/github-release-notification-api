@@ -1,6 +1,9 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
 
 import fastifyEnv from '@fastify/env';
+import fastifyStatic from '@fastify/static';
 import fastifySensible from '@fastify/sensible';
 import prismaClientPlugin from './plugins/prismaClient.js';
 import redisPlugin from './plugins/redis.js';
@@ -11,6 +14,8 @@ import subscriptionRoutes from './routes/subscription.routes.js';
 
 import { envSchema } from './config/index.js';
 import { AppError } from './commons/interfaces/AppError.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const buildApp = async () => {
   const app = Fastify({
@@ -37,6 +42,10 @@ const buildApp = async () => {
     dotenv: true,
   });
   app.register(fastifySensible);
+  app.register(fastifyStatic, {
+    root: path.join(__dirname, '../../client'),
+    prefix: '/',
+  });
   app.register(prismaClientPlugin);
   app.register(redisPlugin);
   app.register(mailTransporterPlugin);
