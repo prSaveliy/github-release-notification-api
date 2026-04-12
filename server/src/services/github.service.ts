@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 
 import { AppError } from '../commons/interfaces/AppError.js';
 import { LatestRelease } from '../commons/interfaces/LatestRelease.js';
+import { withCache } from './githubCache.js';
 
 class GithubService {
   private buildHeaders(fastify: FastifyInstance): Record<string, string> {
@@ -22,24 +23,34 @@ class GithubService {
     owner: string,
     repo: string,
   ): Promise<void> {
-    const response = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}`,
-      { headers: this.buildHeaders(fastify) },
+    const key = `gh:repo:${owner}/${repo}`;
+    await withCache(
+      fastify,
+      key,
+      fastify.config.GITHUB_CACHE_TTL_SECONDS,
+      async () => {
+        const response = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}`,
+          { headers: this.buildHeaders(fastify) },
+        );
+
+        if (response.status === 404) {
+          throw fastify.httpErrors.notFound('Repository not found on GitHub');
+        }
+
+        if (response.status === 429) {
+          throw fastify.httpErrors.serviceUnavailable(
+            'Service is busy due to GitHub API rate limits. Please try again later.',
+          );
+        }
+
+        if (!response.ok) {
+          throw fastify.httpErrors.badGateway('GitHub API error');
+        }
+
+        return { ok: true };
+      },
     );
-
-    if (response.status === 404) {
-      throw fastify.httpErrors.notFound('Repository not found on GitHub');
-    }
-
-    if (response.status === 429) {
-      throw fastify.httpErrors.serviceUnavailable(
-        'Service is busy due to GitHub API rate limits. Please try again later.',
-      );
-    }
-
-    if (!response.ok) {
-      throw fastify.httpErrors.badGateway('GitHub API error');
-    }
   }
 
   async getLatestRelease(

@@ -43,5 +43,12 @@ export const envSchema = {
       type: 'boolean',
       default: true,
     },
+    REDIS_URL: {
+      type: 'string',
+    },
+    GITHUB_CACHE_TTL_SECONDS: {
+      type: 'number',
+      default: 600,
+    },
   },
 };
