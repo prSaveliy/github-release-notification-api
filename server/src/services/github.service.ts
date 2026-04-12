@@ -32,8 +32,8 @@ class GithubService {
     }
 
     if (response.status === 429) {
-      throw fastify.httpErrors.tooManyRequests(
-        'GitHub API rate limit exceeded',
+      throw fastify.httpErrors.serviceUnavailable(
+        'Service is busy due to GitHub API rate limits. Please try again later.',
       );
     }
 
