@@ -1,5 +1,5 @@
 {
-  "extends": "../node_modules/fastify-tsconfig/tsconfig.json",
+  "extends": "fastify-tsconfig",
   "compilerOptions": {
     "outDir": "dist",
     "declaration": false,
